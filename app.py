@@ -9,12 +9,6 @@ from numpy.random import normal
 from numpy import argmax
 from matplotlib.ticker import AutoLocator
 
-plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "serif",
-    "font.serif": ["Charter"],
-    "pgf.texsystem": "pdflatex"})
-
 def objective(x, func_code, noise=0.1):
     """Objective function with optional noise."""
     noise = normal(loc=0, scale=noise)

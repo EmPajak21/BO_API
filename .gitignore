@@ -4,3 +4,4 @@ bayes_opt.egg-info
 build
 dist
 __pycache__
+/plots

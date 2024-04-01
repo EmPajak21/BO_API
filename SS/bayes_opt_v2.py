@@ -7,6 +7,7 @@ from scipy.stats import norm
 from numpy.random import normal
 from numpy import argmax
 from matplotlib.ticker import AutoLocator
+import time
 
 plt.rcParams.update({
     "text.usetex": True,
@@ -74,6 +75,11 @@ def bayesian_optimization(func_code, domain_min, domain_max, initial_points=10, 
     best_ix = argmax(y)
     print(f'Best Result: x={X[best_ix][0]:.3f}, y={y[best_ix][0]:.3f}')
 
+def generate_svg_filename():
+    timestamp = int(time.time())  # Get current timestamp
+    svg_filename = f"plots/plot_{timestamp}.svg"  # Construct SVG file name with timestamp
+    return svg_filename
+
 def plot(X, y, model, func_code, domain_min, domain_max):
     """Plot real observations vs surrogate function."""
     fig, ax = plt.subplots(figsize=(9, 3))
@@ -104,6 +110,7 @@ def plot(X, y, model, func_code, domain_min, domain_max):
     ax.tick_params(axis='both', which='minor', labelsize=12)
     ax.legend(loc='upper center', frameon=False, ncol=4,
               bbox_to_anchor=(0.5, 1.2),fontsize=14)
+    plt.savefig(generate_svg_filename(), format='svg')
     plt.show()
 
 def main():
