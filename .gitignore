@@ -1,3 +1,6 @@
-__pycache__
 .ruff_cache
 app2d.py
+bayes_opt.egg-info
+build
+dist
+__pycache__
