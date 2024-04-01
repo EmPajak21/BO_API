@@ -1,4 +1,3 @@
-import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.gaussian_process import GaussianProcessRegressor
@@ -59,7 +58,7 @@ def bayesian_optimization(func_code, domain_min, domain_max, initial_points=10, 
     model = GaussianProcessRegressor(kernel=kernel)
     model.fit(X, y)
     
-    st.subheader("Initial Surrogate:")
+    print("Initial Surrogate:")
     plot(X, y, model, func_code, domain_min, domain_max)
     
     for i in range(iterations):
@@ -70,10 +69,10 @@ def bayesian_optimization(func_code, domain_min, domain_max, initial_points=10, 
         y = vstack((y, [[actual]]))
         model.fit(X, y)
     
-    st.subheader("Final Surrogate")
+    print("Final Surrogate")
     plot(X, y, model, func_code, domain_min, domain_max)
     best_ix = argmax(y)
-    #st.write(f'Best Result: x={X[best_ix][0]:.3f}, y={y[best_ix][0]:.3f}')
+    print(f'Best Result: x={X[best_ix][0]:.3f}, y={y[best_ix][0]:.3f}')
 
 def plot(X, y, model, func_code, domain_min, domain_max):
     """Plot real observations vs surrogate function."""
@@ -105,51 +104,39 @@ def plot(X, y, model, func_code, domain_min, domain_max):
     ax.tick_params(axis='both', which='minor', labelsize=12)
     ax.legend(loc='upper center', frameon=False, ncol=4,
               bbox_to_anchor=(0.5, 1.2),fontsize=14)
-    # Save the graph as SVG
-    plt.savefig('graph.svg', format='svg')
-    st.pyplot(fig)
+    plt.show()
 
 def main():
-    st.title('Bayesian Optimization API')
-    st.write('This API is a basic interactive demonstration of Bayesian Optimization.')
+    print('Bayesian Optimization')
+    print('This program is a basic demonstration of Bayesian Optimization.')
 
     # Input function for BO
-    st.subheader("Function & Domain")
-    func_code = st.text_area("Python format", 
-                value='np.sin(x) + np.cos(2*x) + np.exp(-0.5 * (x - 5)**2) - 0.5 * np.sin(3*x)')
-
-    # Function domain input
-    col1, col2 = st.columns(2)
-    with col1:
-        domain_min = st.number_input('Minimum Value', value=-5.0)
-    with col2:
-        domain_max = st.number_input('Maximum Value', value=5.0)
+    print("\nFunction & Domain")
+    func_code = input("Enter the function in Python format: ")
+    domain_min = float(input("Enter the minimum value of the domain: "))
+    domain_max = float(input("Enter the maximum value of the domain: "))
 
     # Set no. of initial samples and iterations
-    initial_points = st.slider('Number of Initial Points', min_value=1, max_value=20, value=5)
-    iterations = st.slider('Number of Iterations', min_value=1, max_value=20, value=5)
+    initial_points = int(input("Enter the number of initial points: "))
+    iterations = int(input("Enter the number of iterations: "))
 
     # Kernel selection
-    st.subheader('Kernel Selection')
-    col1, col2 = st.columns(2)
-    with col1:
-        kernel_type = st.radio('Select Kernel Type', ('RBF', 'Matern', 'RationalQuadratic', 'ExpSineSquared'))
+    print("\nKernel Selection")
+    kernel_type = input("Select Kernel Type (RBF, Matern, RationalQuadratic, ExpSineSquared): ")
 
     # Additional hyperparameters based on the selected kernel type
-    with col2:
-        if kernel_type == 'Matern':
-            kernel_length_scale = st.number_input('Length Scale', value=1.0)
-            kernel_nu = st.number_input('Nu', value=2.5)
-        elif kernel_type == 'RationalQuadratic':
-            kernel_alpha = st.number_input('Alpha', value=1.0)
-            kernel_length_scale = st.number_input('Length Scale', value=1.0)
-        elif kernel_type == 'ExpSineSquared':
-            kernel_length_scale = st.number_input('Length Scale', value=1.0)
-            kernel_periodicity = st.number_input('Periodicity', value=1.0)
-        else:  # RBF kernel by default
-            kernel_length_scale = st.number_input('Length Scale', value=1.0)
+    if kernel_type == 'Matern':
+        kernel_length_scale = float(input("Enter Length Scale: "))
+        kernel_nu = float(input("Enter Nu: "))
+    elif kernel_type == 'RationalQuadratic':
+        kernel_alpha = float(input("Enter Alpha: "))
+        kernel_length_scale = float(input("Enter Length Scale: "))
+    elif kernel_type == 'ExpSineSquared':
+        kernel_length_scale = float(input("Enter Length Scale: "))
+        kernel_periodicity = float(input("Enter Periodicity: "))
+    else:  # RBF kernel by default
+        kernel_length_scale = float(input("Enter Length Scale: "))
 
-    # Further options for hyperparameters depending on kernel
     kernel_params = {}
     if kernel_type == 'Matern':
         kernel_params['length_scale'] = kernel_length_scale
@@ -163,9 +150,8 @@ def main():
     else:  # RBF kernel by default
         kernel_params['length_scale'] = kernel_length_scale
 
-    if st.button('Run Bayesian Optimization'):
-        bayesian_optimization(func_code, domain_min, domain_max, initial_points=initial_points,
-                              iterations=iterations, kernel_type=kernel_type, **kernel_params)
+    bayesian_optimization(func_code, domain_min, domain_max, initial_points=initial_points,
+                          iterations=iterations, kernel_type=kernel_type, **kernel_params)
 
 if __name__ == '__main__':
     main()
