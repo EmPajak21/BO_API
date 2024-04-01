@@ -141,6 +141,7 @@ def main():
         else:  # RBF kernel by default
             kernel_length_scale = st.number_input('Length Scale', value=1.0)
 
+    # Further options for hyperparameters depending on kernel
     kernel_params = {}
     if kernel_type == 'Matern':
         kernel_params['length_scale'] = kernel_length_scale
